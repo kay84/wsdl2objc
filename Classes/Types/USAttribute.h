@@ -27,18 +27,18 @@
 	NSString *name;
 	NSString *wsdlName;
 	NSString *attributeDefault;
-	USSchema *schema;
-	USType   *type;
+	USSchema *__strong schema;
+	USType   *__strong type;
 }
 
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, retain) NSString *wsdlName;
+@property (nonatomic, strong) NSString *wsdlName;
 @property (nonatomic, copy) NSString *attributeDefault;
-@property (nonatomic, assign) USSchema * schema;
-@property (nonatomic, assign) USType * type;
+@property (nonatomic, strong) USSchema * schema;
+@property (nonatomic, strong) USType * type;
 
 - (id)init;
-- (void)dealloc;
+//- (void)dealloc;
 
 - (NSDictionary *)templateKeyDictionary;
 

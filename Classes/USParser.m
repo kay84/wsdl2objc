@@ -37,17 +37,12 @@
 {
 	if((self = [super init]))
 	{
-		baseURL = [anURL retain];
+		baseURL = anURL;
 	}
 	
 	return self;
 }
 
-- (void)dealloc
-{
-	if(baseURL != nil) [baseURL release];
-	[super dealloc];
-}
 
 - (USWSDL*)parse
 {
@@ -57,7 +52,6 @@
 	
 	if(error) {
 		NSLog(@"Unable to parse XML document from %@: %@", baseURL, error);
-        [document release];
 		return nil;
 	}
 	
@@ -65,15 +59,13 @@
 	
 	if([[definitions localName] isNotEqualTo:@"definitions"]) {
 		NSLog(@"Expected element named definitions, found %@", [definitions name]);
-        [document release];
 		return nil;
 	}
 	
-	USWSDL *wsdl = [[USWSDL new] autorelease];
+	USWSDL *wsdl = [USWSDL new];
 	[wsdl addXSDSchema];
 	
 	[self processDefinitionsElement:definitions wsdl:wsdl];
-    [document release];
 	
 	return wsdl;
 }
@@ -135,7 +127,6 @@
 		
 		if(error) {
             NSLog(@"Unable to parse XML document from %@ (ignored): %@", location, error);
-            [document release];
 			return;
 		}
 		
@@ -143,12 +134,10 @@
 		
 		if([[schemaElement localName] isNotEqualTo:@"schema"]) {
 			NSLog(@"During schema import, expected element named schema, found %@", [schemaElement name]);
-            [document release];
 			return;
 		}
 		
 		[self processSchemaElement:schemaElement wsdl:wsdl];
-        [document release];
 
 	} else {
 		// not a schema import, let's see if it's a definitions import
@@ -164,7 +153,6 @@
 		
 		if(error) {
             NSLog(@"Unable to parse XML document from %@ (ignored): %@", location, error);
-            [document release];
 			return;
 		}
 		
@@ -172,7 +160,6 @@
 		
 		if([[definitionsElement localName] isNotEqualTo:@"definitions"]) {
 			NSLog(@"During definitions import, expected element named definitions, found %@", [definitionsElement name]);
-            [document release];
 			return;
 		}
 		
@@ -188,7 +175,6 @@
 		
 		[self processDefinitionsElement:definitionsElement wsdl:wsdl];
 		wsdl.targetNamespace = oldTargetNamespace;
-        [document release];
 	}
 }
 
