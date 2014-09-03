@@ -15,6 +15,8 @@
 %ELSE
 @interface %«className» : NSObject <NSCoding> {
 SOAPSigner *soapSigner;
+	NSObject *weakUserData;
+	NSObject *strongUserData;
 %ENDIF
 
 %IFDEF IsAttributedString
@@ -62,6 +64,9 @@ NSString *_content;
 %ENDIF
 
 /* elements */
+@property (nonatomic, assign) NSObject *weakUserData;
+@property (nonatomic, retain) NSObject *strongUserData;
+
 %IFDEF sequenceElements
 %FOREACH element in sequenceElements
 %IF element.useAnArray

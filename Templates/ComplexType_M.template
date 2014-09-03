@@ -2,6 +2,8 @@
 
 %IFNDEF superClass
 @synthesize soapSigner;
+@synthesize weakUserData;
+@synthesize strongUserData;
 %ENDIF
 
 %IFEQ superClass.className "NSString *"
