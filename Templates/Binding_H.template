@@ -76,7 +76,7 @@ typedef void (^%«className»OperationBlock)(id operation, %«className»Respons
 	
 #if NS_BLOCKS_AVAILABLE
 	//block to execute when request completes successfully
-	%«className»OperationBlock completionBlock;
+	%«className»OperationBlock operationCompletionBlock;
 #endif
 }
 
@@ -90,7 +90,7 @@ typedef void (^%«className»OperationBlock)(id operation, %«className»Respons
 - (id)initWithBinding:(%«className» *)aBinding delegate:(id<%«className»ResponseDelegate>)aDelegate;
 
 #if NS_BLOCKS_AVAILABLE
-@property (nonatomic, copy, setter=setCompletionBlock:) %«className»OperationBlock completionBlock;
+@property (nonatomic, copy, setter=setOperationCompletionBlock:) %«className»OperationBlock operationCompletionBlock;
 
 - (id)initWithBinding:(%«className» *)aBinding completionBlock:(%«className»OperationBlock)responseCompletionBlock;
 #endif

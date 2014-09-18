@@ -125,7 +125,7 @@
 																							 %«header.name»:a%«header.uname»
 %ENDFOR
 						  ] autorelease];
-	[objWithOperation setCompletionBlock: [[block copy] autorelease]];
+	[objWithOperation setOperationCompletionBlock: [[block copy] autorelease]];
 	[self performAsynchronousOperation:objWithOperation];
 	return objWithOperation;
 }
@@ -216,11 +216,11 @@ NSLog(@"dealloc from children class");
 #pragma mark blocks
 #if NS_BLOCKS_AVAILABLE
 
-@synthesize completionBlock;
-- (void) setCompletionBlock:(%«className»OperationBlock)completionBlock_
+@synthesize operationCompletionBlock;
+- (void) setOperationCompletionBlock:(%«className»OperationBlock)completionBlock_
 {
-  Block_release(completionBlock);
-  completionBlock = Block_copy(completionBlock_);
+  Block_release(operationCompletionBlock);
+  operationCompletionBlock = Block_copy(completionBlock_);
 }
 
 - (id)initWithBinding:(%«className» *)aBinding completionBlock:(void (^)(id operation, %«className»Response *response))block
@@ -231,7 +231,7 @@ NSLog(@"dealloc from children class");
 		self.delegate = nil;
 		self.responseData = nil;
 		self.urlConnection = nil;
-		self.completionBlock = block;
+		self.operationCompletionBlock = block;
 	}
 	
 	return self;
@@ -290,11 +290,11 @@ NSLog(@"dealloc from children class");
 		  {
             [delegate operation:self completedWithResponse:response];
 		  }
-		  else if (completionBlock)
+		  else if (operationCompletionBlock)
 		  {
 			dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
 			dispatch_async(queue, ^{
-			  completionBlock(((%«className»Operation*)self), response);
+			  operationCompletionBlock(((%«className»Operation*)self), response);
 			});
 		  }
 		}
@@ -322,11 +322,11 @@ NSLog(@"dealloc from children class");
 	}
 
 #if NS_BLOCKS_AVAILABLE
-	else if(completionBlock)
+	else if(operationCompletionBlock)
 	{
 	  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
 	  dispatch_async(queue, ^{
-		completionBlock(((%«className»Operation*)self), response);
+		operationCompletionBlock(((%«className»Operation*)self), response);
 	  });
 	}
 #endif
@@ -350,10 +350,10 @@ NSLog(@"dealloc from parent class");
 - (void)releaseBlocksOnMainThread
 {
 	NSMutableArray *blocks = [NSMutableArray array];
-	if (completionBlock) {
-		[blocks addObject:completionBlock];
-		Block_release(completionBlock);
-		completionBlock = nil;
+	if (operationCompletionBlock) {
+		[blocks addObject:operationCompletionBlock];
+		Block_release(operationCompletionBlock);
+		operationCompletionBlock = nil;
 	}
 	
 	[[self class] performSelectorOnMainThread:@selector(releaseBlocks:) withObject:blocks waitUntilDone:[NSThread isMainThread]];
@@ -542,7 +542,7 @@ NSLog(@"dealloc from parent class");
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-	if ((responseData != nil && delegate != nil) || (responseData != nil && completionBlock != nil))
+	if ((responseData != nil && delegate != nil) || (responseData != nil && operationCompletionBlock != nil))
 	{
 		xmlDocPtr doc;
 		xmlNodePtr cur;
@@ -565,11 +565,11 @@ NSLog(@"dealloc from parent class");
 			{
 			  [delegate operation:self completedWithResponse:response];
 			}
-			else if (completionBlock)
+			else if (operationCompletionBlock)
 			{
 			  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
 			  dispatch_async(queue, ^{
-				completionBlock(((%«className»Operation*)self), response);
+				operationCompletionBlock(((%«className»Operation*)self), response);
 			  });
 			}
 		} else {
@@ -639,11 +639,11 @@ NSLog(@"dealloc from parent class");
 		{
 		  [delegate operation:self completedWithResponse:response];
 		}
-		else if (completionBlock)
+		else if (operationCompletionBlock)
 		{
 		  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
 		  dispatch_async(queue, ^{
-			completionBlock(((%«className»Operation*)self), response);
+			operationCompletionBlock(((%«className»Operation*)self), response);
 		  });
 		}
 	}
